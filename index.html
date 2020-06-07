@@ -13,7 +13,7 @@
         <div style="font-size: 0px;" v-text="runingList"></div>
         
 
-        <div id="alert" style="top: 50%; transition: opacity 1s;" class='flex justify-center w-full absolute'>
+        <div id="alert" style="top: 30%; transition: opacity 1s;" class='flex justify-center w-full absolute'>
             <div class="w-full max-w-2xl flex justify-center">
                   <transition name="fade">
                     <p v-if="showAlert" class="w-3/4 text-center text-3xl rounded-full p-1" :class="alertColor">
@@ -37,6 +37,60 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
+        <div class='flex justify-center my-2'>
+            <div class='w-full max-w-2xl bg-white rounded-lg p-6'>
+                <div class='flex flex-wrap -mx-3'>
+        
+                    <div class='w-1/3 px-3 mb-6'>
+                        <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' for='grid-select-1'>الأسم</label>
+                        <div class='relative'>
+                            <select v-model="w_name" class='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500' id='grid-select-1' required>
+                                <option v-for="(name,index) in names" :value="index" :key="name">{{ name }}</option>
+                            </select>
+                            <div class='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
+                                <svg class='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
+                                <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='w-1/3 px-3 mb-6'>
+                        <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' for='grid-select-2'>اسم الورد</label>
+                        <div class='relative'>
+                            <select v-model="w_wardname" class='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500' id='grid-select-2' required>
+                                <option v-for="(wardname,index) in wardsName" :value="index" v-text="wardname"></option>
+                            </select>
+                            <div class='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
+                                <svg class='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
+                                <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='w-1/3 px-3 mb-6'>
+                        <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' for='grid-select-3'>الكمية</label>
+                        <input v-model.number="wardCountInput" class='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' type='number' >
+                    </div>
+                    <div class='w-1/2 px-3'>
+                        <button class='appearance-none block w-full bg-green-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="addtoStok()">+</button>
+                    </div>
+                    <div class='w-1/2 px-3'>
+                        <button class='appearance-none block w-full bg-red-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="subtoStok()">-</button>
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+
+
+
+
+
 
         <div class='flex justify-center my-2'>
             <div class='w-full max-w-2xl bg-white rounded-lg p-6'>
@@ -139,51 +193,28 @@
         
 
         <div class='flex justify-center mt-64 my-2'>
-            <div class='w-full max-w-2xl bg-white rounded-lg p-6 hidden md:block'>
+            <div class='w-full max-w-2xl bg-white rounded-lg p-6'>
                 <div class='flex flex-wrap -mx-3'>
         
-                    <div class='w-1/3 px-3 mb-6'>
-                        <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' for='grid-select-1'>الأسم</label>
-                        <div class='relative'>
-                            <select v-model="w_name" class='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500' id='grid-select-1' required>
-                                <option v-for="(name,index) in names" :value="index" :key="name">{{ name }}</option>
-                            </select>
-                            <div class='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                                <svg class='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
-                                <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/>
-                                </svg>
-                            </div>
-                        </div>
+                    <div v-if="!countOff" class='w-1/2 px-3'>
+                        <button class='appearance-none block w-full bg-green-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="countOff = true">فتح الكاونتر</button>
                     </div>
-                    <div class='w-1/3 px-3 mb-6'>
-                        <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' for='grid-select-2'>اسم الورد</label>
-                        <div class='relative'>
-                            <select v-model="w_wardname" class='block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500' id='grid-select-2' required>
-                                <option v-for="(wardname,index) in wardsName" :value="index" v-text="wardname"></option>
-                            </select>
-                            <div class='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                                <svg class='fill-current h-4 w-4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
-                                <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/>
-                                </svg>
-                            </div>
-                        </div>
+                    <div v-if="countOff" class='w-1/2 px-3'>
+                        <button class='appearance-none block w-full bg-red-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="countOff = false">اغلاق الكاونتر</button>
                     </div>
-                    <div class='w-1/3 px-3 mb-6'>
-                        <label class='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2' for='grid-select-3'>الكمية</label>
-                        <input v-model.number="wardCountInput" class='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' type='number' >
+                    <div v-if="!countAllOff" class='w-1/2 px-3'>
+                        <button class='appearance-none block w-full bg-green-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="countAllOff = true">فتح المجموع</button>
                     </div>
-                    <div class='w-1/2 px-3'>
-                        <button class='appearance-none block w-full bg-green-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="addtoStok()">+</button>
-                    </div>
-                    <div class='w-1/2 px-3'>
-                        <button class='appearance-none block w-full bg-red-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="subtoStok()">-</button>
+                    <div v-if="countAllOff" class='w-1/2 px-3'>
+                        <button class='appearance-none block w-full bg-red-400 text-gray-700 font-bold uppercase border border-gray-200 rounded-lg py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500' @click="countAllOff = false">اغلاق المجموع</button>
                     </div>
         
                 </div>
             </div>
         </div>
 
-        <div class='flex justify-center px-5 my-2 hidden md:block'>
+
+        <div v-if="countOff" class='flex justify-center px-5 my-2'>
             <div class='w-full bg-white rounded-lg p-6'>
                 <div class='w-full px-3 mb-6'>
                     <label class='text-2xl'>عداد الورد :</label>
@@ -198,11 +229,12 @@
                             <tbody>
                                 <tr class="flex hover:bg-gray-200" v-for="(name,index) in names">
                                     <td class="w-1/12 pr-3 border-r border-b border-gray-400" v-text="name"></td>
-                                    <td class="w-1/12 pr-3 border-r border-b border-gray-400" v-for="(ward,Windex) in wardsName" v-text="getStok(index,Windex)"></td>
+                                    <td class="w-1/12 pr-3 border-r border-b border-gray-400" v-for="(ward,Windex) in wardsName"
+                                     v-text="wardWithStok[index][Windex].stok == 0 ? '':wardWithStok[index][Windex].stok"></td>
                                 </tr>
                                 <tr class="flex hover:bg-gray-200">
                                     <td class="w-1/12 pr-3 border-r border-b border-gray-400" v-text="'المجموع'"></td>
-                                    <td class="w-1/12 pr-3 border-r border-b border-gray-400" v-for="(ward,Windex) in wardsName" v-text="getCountAll(Windex)"></td>
+                                    <td v-if="countAllOff" class="w-1/12 pr-3 border-r border-b border-gray-400" v-for="(ward,Windex) in wardsName" v-text="getCountAll(Windex)"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -211,7 +243,7 @@
             </div>
         </div>
         
-        <div class='flex justify-center my-2 mt-64'>
+        <!--<div v-if="countAllOff" class='flex justify-center my-2 mt-64'>
             <div class='w-full max-w-2xl bg-white rounded-lg p-6'>
                 <div class="flex flex-wrap -mx-3 mb-3">
                     <div class="w-1/3">الأسم:</div>
@@ -229,7 +261,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
 
 

@@ -112,7 +112,10 @@ new Vue({
         alertColor: "",
         alertMessage : "",
 
-        newNameInput:""
+        newNameInput:"",
+
+        countOff:false,
+        countAllOff:false
     },
     methods: {
         add(){
@@ -295,15 +298,18 @@ new Vue({
         },
 
         firstWriteInWardWithStok(){
+            var rrr = [];
             for (var nameid = 0; nameid < this.names.length; nameid++) {
+                rrr.push([]);
+            }
+            rrr.forEach(item => {
                 for (var wardid = 0; wardid < this.wardsName.length; wardid++) {
-                    this.wardWithStok.push({
-                        name:nameid,
-                        wardName:wardid,
+                    item.push({
                         stok: 0,
                     });
                 }
-            }
+            });
+            this.wardWithStok = rrr
         },
         getItem(thename,theward){
             var x = this.wardWithStok.filter(ward => {
@@ -314,33 +320,22 @@ new Vue({
             });
             return y[0];
         },
-        getStok(thename,theward){
-            var x = this.getItem(thename,theward);
-            if(!x)return "FU";
-            return x.stok;
-        },
         getCountAll(theward){
             var count = 0;
-            var x = this.wardWithStok.filter(ward => {
-                return ward.wardName == theward;
-            });
-            x.forEach(item => {
-                count += item.stok;
-            });
-            if(!x)return "FU";
+            for (var nameid = 0; nameid < this.names.length; nameid++) {
+                count += this.wardWithStok[nameid][theward].stok;
+            }
             return count;
         },
         addtoStok(){
-            var x = this.getItem(this.w_name,this.w_wardname);
-            if(!x)return "FU";
-            x.stok += this.wardCountInput;
-            this.wardCountInput = 0;
+            var vm = this;
+            vm.wardWithStok[vm.w_name][vm.w_wardname].stok += vm.wardCountInput;
+            vm.wardCountInput = 0;
         },
         subtoStok(){
-            var x = this.getItem(this.w_name,this.w_wardname);
-            if(!x)return "FU";
-            x.stok -= this.wardCountInput;
-            this.wardCountInput = 0;
+            var vm = this;
+            vm.wardWithStok[vm.w_name][vm.w_wardname].stok -= vm.wardCountInput;
+            vm.wardCountInput = 0;
         },
 
 
@@ -381,7 +376,7 @@ new Vue({
         saveDataInLocal(){
             localStorage.setItem('names',JSON.stringify(this.names))
             localStorage.setItem('wardCount',JSON.stringify(this.wardWithStok))
-        }
+        },
     },
     created() {
         this.getWardTime();
@@ -404,7 +399,10 @@ new Vue({
             } else {
                 this.wardTimeLeft = this.wardTime - minutes;
             }
-        }
+        },
+        wardWithStok(){
+            console.log("musab");
+        },
     },
     computed: {
         runingList () {   
