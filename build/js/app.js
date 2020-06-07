@@ -26,8 +26,8 @@ new Vue({
                 time:80*60  },
         ],
         
-        names:["m.hard","القناص.","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"],
-        name:"1",
+        names:[],
+        name:"",
         feild1:"وايلدسيتي",
         feild2:"لاس فيجاس",
         mytime:null,
@@ -35,6 +35,33 @@ new Vue({
         runing:[],
         done:[],
 
+        wardsFullName:[
+            "أقحوان . وايلد سيتي",
+            "ميرمية . لاس فيجاس",
+            "عود الصليب . هونج كونج",
+            "ساكورا . طوكيو",
+            "اضاليا . مكسيكو",
+            "الصبار . ريو",
+            "شجرة الفضة . كيب تاون",
+            "زهرة الربيع . روما",
+            "ورد احمر . لندن",
+            "زنبق الماء . القاهرة",
+            "تيوليب . امستردام"
+        ],
+        wardsName:[
+            "أقحوان",
+            "ميرمية",
+            "عود الصليب",
+            "ساكورا",
+            "اضاليا",
+            "الصبار",
+            "شجرة الفضة",
+            "زهرة الربيع",
+            "ورد احمر",
+            "زنبق الماء",
+            "تيوليب"
+        ],
+        wardWithStok:[],
         wards:[
             {   name:"أقحوان . وايلد سيتي",
                 inStok:0,
@@ -71,6 +98,9 @@ new Vue({
                 input:0 },
         ],
 
+        w_name:0,
+        w_wardname:0,
+        wardCountInput:0,
         inputId:1,
 
 
@@ -80,7 +110,9 @@ new Vue({
 
         showAlert: false,
         alertColor: "",
-        alertMessage : ""
+        alertMessage : "",
+
+        newNameInput:""
     },
     methods: {
         add(){
@@ -222,7 +254,7 @@ new Vue({
         },
         getTimeNow(){
             var time = new Date();
-            return time.getHours()%12+" : "+time.getMinutes()+" : "+time.getSeconds();
+            return time.getSeconds()+" : "+time.getMinutes()+" : "+time.getHours()%12;
         },
 
 
@@ -244,26 +276,118 @@ new Vue({
             var that = this;
             setTimeout(function() {
                 that.showAlert = false;
-              }, 800);
+              }, 1000);
         },
         addAlert(){
             this.alertColor = "bg-green-500";
-            this.alertMessage = "Added Successfully";
+            this.alertMessage = "تمت الأضافة بنجاح";
             this.alertFade();
         },
         reuseAlert(){
             this.alertColor = " bg-blue-500";
-            this.alertMessage = "Reuse Successfully";
+            this.alertMessage = "تم اعادة الأستخدام بنجاح";
             this.alertFade();
         },
         deleteAlert(){
             this.alertColor = " bg-red-500";
-            this.alertMessage = "Delete Successfully";
+            this.alertMessage = "تم الحذف بنجاح";
             this.alertFade();
+        },
+
+        firstWriteInWardWithStok(){
+            for (var nameid = 0; nameid < this.names.length; nameid++) {
+                for (var wardid = 0; wardid < this.wardsName.length; wardid++) {
+                    this.wardWithStok.push({
+                        name:nameid,
+                        wardName:wardid,
+                        stok: 0,
+                    });
+                }
+            }
+        },
+        getItem(thename,theward){
+            var x = this.wardWithStok.filter(ward => {
+                return ward.name == thename;
+            });
+            var y = x.filter(ward => {
+                return ward.wardName == theward;
+            });
+            return y[0];
+        },
+        getStok(thename,theward){
+            var x = this.getItem(thename,theward);
+            if(!x)return "FU";
+            return x.stok;
+        },
+        getCountAll(theward){
+            var count = 0;
+            var x = this.wardWithStok.filter(ward => {
+                return ward.wardName == theward;
+            });
+            x.forEach(item => {
+                count += item.stok;
+            });
+            if(!x)return "FU";
+            return count;
+        },
+        addtoStok(){
+            var x = this.getItem(this.w_name,this.w_wardname);
+            if(!x)return "FU";
+            x.stok += this.wardCountInput;
+            this.wardCountInput = 0;
+        },
+        subtoStok(){
+            var x = this.getItem(this.w_name,this.w_wardname);
+            if(!x)return "FU";
+            x.stok -= this.wardCountInput;
+            this.wardCountInput = 0;
+        },
+
+
+        addNewName(){
+            var isExist = this.names.filter(name => {
+                return name == this.newNameInput;
+            });
+            
+            if(!isExist[0] && this.newNameInput != ""){
+                this.names.push(
+                    this.newNameInput
+                );
+                for (var wardid = 0; wardid < this.wardsName.length; wardid++) {
+                    this.wardWithStok.push({
+                        name:this.names.length-1,
+                        wardName:wardid,
+                        stok: 0,
+                    });
+                }
+                this.newNameInput = "";
+            }else{
+                if(isExist[0])console.log("أصلا قاعد يا أهبل");
+                if(this.newNameInput == ""){
+                    console.log("الشي دا فاضي");
+                }
+            }
+        },
+        
+        
+        writeNames(){
+            if(localStorage.getItem('names'))this.names = JSON.parse(localStorage.getItem('names'));
+            else this.names = ["m.hard","القناص.","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33"]
+        },
+        writeWard(){
+            if(localStorage.getItem('wardCount'))this.wardWithStok = JSON.parse(localStorage.getItem('wardCount'));
+            else this.firstWriteInWardWithStok();
+        },
+        saveDataInLocal(){
+            localStorage.setItem('names',JSON.stringify(this.names))
+            localStorage.setItem('wardCount',JSON.stringify(this.wardWithStok))
         }
     },
     created() {
         this.getWardTime();
+        this.writeNames();
+        this.writeWard();
+        this.name = this.names[0];
     },
     watch:{
         wardTime(){
