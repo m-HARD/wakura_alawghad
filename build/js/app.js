@@ -35,19 +35,6 @@ new Vue({
         runing:[],
         done:[],
 
-        wardsFullName:[
-            "أقحوان . وايلد سيتي",
-            "ميرمية . لاس فيجاس",
-            "عود الصليب . هونج كونج",
-            "ساكورا . طوكيو",
-            "اضاليا . مكسيكو",
-            "الصبار . ريو",
-            "شجرة الفضة . كيب تاون",
-            "زهرة الربيع . روما",
-            "ورد احمر . لندن",
-            "زنبق الماء . القاهرة",
-            "تيوليب . امستردام"
-        ],
         wardsName:[
             "أقحوان",
             "ميرمية",
@@ -62,7 +49,8 @@ new Vue({
             "تيوليب"
         ],
         wardWithStok:[],
-        wards:[
+        wards:[],
+        wardss:[
             {   name:"أقحوان . وايلد سيتي",
                 inStok:0,
                 input:0 },
@@ -101,8 +89,9 @@ new Vue({
         w_name:0,
         w_wardname:0,
         wardCountInput:0,
+        wardCountInput2:3,
+        
         inputId:1,
-
 
         wardTime:16,
         wardTimeLeft:0,
@@ -115,7 +104,10 @@ new Vue({
         newNameInput:"",
 
         countOff:false,
-        countAllOff:false
+        count2Off:false,
+        countAllOff:false,
+        countAddOff:false,
+        countAdd2Off:false,
     },
     methods: {
         add(){
@@ -269,6 +261,14 @@ new Vue({
             obj.inStok -= obj.input;
             obj.input = 0;
         },
+        AddToStok2(){
+            this.wards[this.w_wardname].inStok += this.wardCountInput2;
+            this.wardCountInput2 = 0;
+        },
+        SubToStok2(){
+            this.wards[this.w_wardname].inStok -= this.wardCountInput2;
+            this.wardCountInput2 = 0;
+        },
         ThisToStok(obj){
             obj.inStok = obj.input;
             obj.input = 0;
@@ -369,19 +369,27 @@ new Vue({
             if(localStorage.getItem('names'))this.names = JSON.parse(localStorage.getItem('names'));
             else this.names = ["m.hard","القناص.","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33"]
         },
-        writeWard(){
-            if(localStorage.getItem('wardCount'))this.wardWithStok = JSON.parse(localStorage.getItem('wardCount'));
+        writeWard1(){
+            if(localStorage.getItem('wardCount1'))this.wards = JSON.parse(localStorage.getItem('wardCount1'));
+            else this.wards = this.wardss;
+        },
+        writeWard2(){
+            if(localStorage.getItem('wardCount2'))this.wardWithStok = JSON.parse(localStorage.getItem('wardCount2'));
             else this.firstWriteInWardWithStok();
         },
+
+
         saveDataInLocal(){
             localStorage.setItem('names',JSON.stringify(this.names))
-            localStorage.setItem('wardCount',JSON.stringify(this.wardWithStok))
+            localStorage.setItem('wardCount1',JSON.stringify(this.wards))
+            localStorage.setItem('wardCount2',JSON.stringify(this.wardWithStok))
         },
     },
     created() {
         this.getWardTime();
         this.writeNames();
-        this.writeWard();
+        this.writeWard1();
+        this.writeWard2();
         this.name = this.names[0];
     },
     watch:{
@@ -399,10 +407,7 @@ new Vue({
             } else {
                 this.wardTimeLeft = this.wardTime - minutes;
             }
-        },
-        wardWithStok(){
-            console.log("musab");
-        },
+        }
     },
     computed: {
         runingList () {   
